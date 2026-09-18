@@ -1,0 +1,1 @@
+{"RootNamespace":"XAUUSD_cBot","PythonFiles":["XAUUSD cBot_main.py","core_enums.py","core_models.py","core_events.py","config_schema.py","indicators.py","resample.py","strategy_interface.py","strategies.py","risk_engine.py","trade_filters.py","position_monitor.py","execution_interface.py","bot_state_machine.py","audit.py","robot_wrapper.py"]}
