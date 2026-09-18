@@ -1,0 +1,55 @@
+# Base config — reference values. In practice bot_runner loads one of
+# config/environments/{backtest,paper,live}.yaml, each of which repeats
+# these sections in full (deliberately not inherited/merged, so each
+# environment's file is a complete, auditable picture of its own limits).
+
+environment: live
+
+risk:
+  default_risk_percent: 0.0035   # 0.35% — within the 0.25-0.5% brief range
+  max_risk_percent: 0.01         # hard ceiling, 1%
+  max_open_positions: 1
+  daily_loss_limit_percent: 0.02
+  max_drawdown_percent: 0.10
+  max_consecutive_losses: 3
+  consecutive_loss_cooldown_hours: 24
+  margin_utilization_cap: 0.5
+  min_lot_risk_tolerance: 0.0
+  daily_loss_reset: utc_midnight
+
+filters:
+  max_spread_points: 35          # PLACEHOLDER — MUST be replaced with a real observed XM XAUUSD (cTrader) spread value before this file is ever used for live trading
+  duplicate_order_debounce_seconds: 5
+  allowed_sessions: null
+
+broker:
+  # XM, cTrader, Raw Spread standard account (not cents). Values taken
+  # from cTrader's Symbol Info panel for XAUUSD.
+  symbol: "XAUUSD"
+  leverage: 100
+  contract_size: 100.0            # 100 oz/lot ("Lot size" in cTrader)
+  digits: 2                       # "Pip position": 2 -> point/pip = 0.01
+  lot_step: 0.01                  # not explicitly shown in Symbol Info — standard cTrader default, confirm if precision issues appear
+  min_lot: 0.01
+  max_lot: 100.0
+  margin_rate: 1.0                # no explicit "margin rate" field shown; 1.0 = standard notional/leverage formula
+  commission_per_million_usd: 30.0  # $30 per $1M notional, ASSUMED per side — verify against an actual filled order
+
+  account_currency_unit: usd      # standard account, not cents — no scaling needed
+  unit_scale_factor: 1.0
+
+  # Swap — NOT assumed free (unlike the previous broker's confirmed-Islamic
+  # account). swap_enabled stays false until swap-free/Islamic status on
+  # this XM account is confirmed; real point values are stored so this is
+  # a one-line flip once known.
+  swap_enabled: false
+  swap_long_points: -58.6         # cTrader "Swap (long)"
+  swap_short_points: 40.9         # cTrader "Swap (short)"
+  triple_swap_weekday: 2          # Wednesday (0=Mon..6=Sun) — cTrader "3-day swaps: Wednesday"
+  weekend_swap_disabled: true     # cTrader "Weekend swaps: Disabled"
+
+kill_switch:
+  manual_trigger_enabled: false
+  manual_rearm_required: true
+  trigger_on_broker_disconnect: true
+  trigger_on_max_drawdown: true
